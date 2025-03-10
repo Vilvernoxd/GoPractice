@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/Yandex-Practicum/go1fl-sprint5-final/internal/personaldata"
+	"github.com/Yandex-Practicum/go1fl-sprint5-final/internal/spentenergy"
 )
 
 const (
@@ -26,19 +27,19 @@ func (ds *DaySteps) Parse(datastring string) (err error) {
 
 	components := strings.Split(datastring, ",")
 	if len(components) != 2 {
-		err = errors.New("неверный формат строки")
+		err = errors.New("invalid string format")
 		return
 	}
 
 	steps, err := strconv.Atoi(components[0])
 	if err != nil {
-		err = errors.New("количество шагов должно быть целым числом")
+		err = errors.New("step count must be an integer")
 		return
 	}
 
 	duration, err := time.ParseDuration(components[1])
 	if err != nil {
-		err = errors.New("неверный формат длительности")
+		err = errors.New("invalid duration format")
 		return
 	}
 
@@ -52,16 +53,19 @@ func (ds *DaySteps) Parse(datastring string) (err error) {
 func (ds DaySteps) ActionInfo() (string, error) {
 
 	if ds.Duration <= 0 {
-		return "", errors.New("продолжительность должна быть больше 0")
+		return "", errors.New("duration must be greater than 0")
 	}
 
 	if ds.Weight <= 0 {
-		return "", errors.New("вес пользователя должен быть больше 0")
+		return "", errors.New("weight must be greater than 0")
 	}
 
-	dist := (float64(ds.Steps) * StepLength) / 1000
+	dist := spentenergy.Distance(ds.Steps)
 
-	calories := ds.Weight * dist * 0.035
+	calories, err := spentenergy.WalkingSpentCalories(ds.Steps, ds.Weight, ds.Height, ds.Duration)
+	if err != nil {
+		return "", errors.New("error calculating calories")
+	}
 
 	res := fmt.Sprintf("Количество шагов: %d.\nДистанция составила %.2f км.\nВы сожгли %.2f ккал.", ds.Steps, dist, calories)
 

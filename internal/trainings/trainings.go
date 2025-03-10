@@ -24,27 +24,27 @@ func (t *Training) Parse(datastring string) (err error) {
 
 	components := strings.Split(datastring, ",")
 	if len(components) != 3 {
-		err = errors.New("ожидается 3 части в строке")
+		err = errors.New("expected 3 parts in the string")
 		return
 	}
 
 	steps, stepsErr := strconv.Atoi(components[0])
 	if stepsErr != nil {
-		err = errors.New("количество шагов должно быть целым числом")
+		err = errors.New("step count must be an integer")
 		return
 	}
 	t.Steps = steps
 
 	trainingType := components[1]
 	if trainingType != "Бег" && trainingType != "Ходьба" {
-		err = errors.New("неверный тип тренировки")
+		err = errors.New("invalid training type")
 		return
 	}
 	t.TrainingType = trainingType
 
 	duration, durationErr := time.ParseDuration(components[2])
 	if durationErr != nil {
-		err = errors.New("неверный формат продолжительности")
+		err = errors.New("invalid duration format")
 		return
 	}
 	t.Duration = duration
@@ -56,7 +56,7 @@ func (t *Training) Parse(datastring string) (err error) {
 func (t Training) ActionInfo() (string, error) {
 
 	if t.Duration <= 0 {
-		return "", errors.New("продолжительность должна быть больше 0")
+		return "", errors.New("duration must be greater than 0")
 	}
 
 	dist := spentenergy.Distance(t.Steps)

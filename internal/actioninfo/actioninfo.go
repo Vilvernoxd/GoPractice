@@ -16,13 +16,13 @@ func Info(dataset []string, dp DataParser) {
 	for _, activity := range dataset {
 		err := dp.Parse(activity)
 		if err != nil {
-			fmt.Printf("Ошибка парсинга: %v\n", err)
+			fmt.Printf("Parsing error: %v\n", err)
 			continue
 		}
 
 		info, err := dp.ActionInfo()
 		if err != nil {
-			fmt.Printf("Не удалось получить информацию об активности: %v\n", err)
+			fmt.Printf("Failed to get activity information: %v\n", err)
 			continue
 		}
 
